@@ -1,18 +1,22 @@
 /* eslint-disable prettier/prettier */
 
 import { Injectable, CanActivate, ExecutionContext, UnauthorizedException } from '@nestjs/common';
+import { Request } from 'express';
+import { UserEntity } from 'src/users/entities/user.entity';
+
+interface AuthenticatedRequest extends Request {
+    currentUser?: UserEntity;
+}
 
 @Injectable()
 export class AuthentificationGuard implements CanActivate {
     canActivate(context: ExecutionContext): boolean {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        const request = context.switchToHttp().getRequest(); // Récupère la requête HTTP
+        const request = context.switchToHttp().getRequest<AuthenticatedRequest>();
 
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        if (!request?.currentUser) {
+        if (!request.currentUser) {
             throw new UnauthorizedException('Accès non autorisé. Veuillez vous connecter.');
         }
-
         return true;
     }
 }
+

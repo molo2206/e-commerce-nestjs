@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { IsArray, IsNotEmpty, IsNumber, IsPositive, IsString, Min } from "class-validator";
+import { IsNotEmpty, IsString } from "class-validator";
 
 /* eslint-disable prettier/prettier */
 export class CreateProductDto {
@@ -12,18 +12,14 @@ export class CreateProductDto {
     description: string;
 
     @IsNotEmpty({ message: 'price should not be empty' })
-    @IsNumber({ maxDecimalPlaces: 2 }, { message: 'price should be number & max decimal precission 2' })
-    @IsPositive({ message: 'price should be positive number' })
+    // @IsNumber({ maxDecimalPlaces: 2 }, { message: 'price should be number & max decimal precission 2' })
+    // @IsPositive({ message: 'price should be positive number' })
     price: number;
 
     @IsNotEmpty({ message: 'stock should not be empty' })
-    @IsNumber({}, { message: 'stock should be number' })
-    @Min(0, { message: 'stock can not be negative' })
+    // @IsNumber({}, { message: 'stock should be number' })
+    // @Min(0, { message: 'stock can not be negative' })
     stock: number;
-
-    @IsNotEmpty({ message: 'images should not be empty.' })
-    @IsArray({ message: 'images should be in array format.' })
-    images: string[]
 
     @IsNotEmpty({ message: 'category can not be emppty.' })
     @IsString()

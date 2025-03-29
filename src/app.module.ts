@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { dataSourceOptions } from 'db/data-source';
 import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -8,8 +9,10 @@ import { ProductsModule } from './products/products.module';
 import { ReviewsModule } from './reviews/reviews.module';
 import { OtpModule } from './otp/otp.module';
 import { OrdersModule } from './orders/orders.module';
+import { HttpModule } from '@nestjs/axios';
+import { AlertApiModule } from './alert-api/alert-api.module';
 @Module({
-  imports: [TypeOrmModule.forRoot(dataSourceOptions), UsersModule, CategoriesModule, ProductsModule, ReviewsModule, OtpModule, OrdersModule],
+  imports: [TypeOrmModule.forRoot(dataSourceOptions),HttpModule, UsersModule, CategoriesModule, ProductsModule, ReviewsModule, OtpModule, OrdersModule, AlertApiModule],
   controllers: [],
   providers: [],
 })
