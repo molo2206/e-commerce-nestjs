@@ -31,8 +31,11 @@
     "@nestjs/config": "^4.0.1",
     "@nestjs/core": "^11.0.11",
     "@nestjs/mapped-types": "*",
+    "@nestjs/mongoose": "^11.0.3",
     "@nestjs/platform-express": "^11.0.12",
+    "@nestjs/platform-socket.io": "^11.0.12",
     "@nestjs/typeorm": "^11.0.0",
+    "@nestjs/websockets": "^11.0.12",
     "@types/jsonwebtoken": "^9.0.9",
     "axios": "^1.8.4",
     "bcrypt": "^5.1.1",
@@ -40,6 +43,7 @@
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
     "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.13.1",
     "multer": "^1.4.5-lts.2",
     "mysql": "^2.18.1",
     "nodemailer": "^6.10.0",
@@ -48,7 +52,8 @@
     "rxjs": "^7.8.1",
     "sql": "^0.78.0",
     "sqlite": "^5.1.1",
-    "typeorm": "^0.3.21"
+    "typeorm": "^0.3.21",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.2.0",
@@ -64,6 +69,7 @@
     "@types/node": "^22.13.10",
     "@types/nodemailer": "^6.4.17",
     "@types/supertest": "^6.0.2",
+    "@types/xlsx": "^0.0.35",
     "@typescript-eslint/eslint-plugin": "^8.26.1",
     "@typescript-eslint/parser": "^8.26.1",
     "dotenv": "^16.4.7",
