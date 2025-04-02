@@ -3,6 +3,7 @@ import { CategoryEntity } from 'src/categories/entities/category.entity';
 import { OrderEntity } from 'src/orders/entities/order.entity';
 import { ProductEntity } from 'src/products/entities/product.entity';
 import { ReviewEntity } from 'src/reviews/entities/review.entity';
+import { UserOrganisationEntity } from 'src/user-permissions/entities/user-organization.entity';
 import {
   Column,
   CreateDateColumn,
@@ -49,4 +50,9 @@ export class UserEntity {
 
   @OneToMany(() => OrderEntity, (order) => order.user)
   orders: OrderEntity[];
+
+  // Relation avec Affectation (Un utilisateur peut être affecté à plusieurs organisations)
+  @OneToMany(() => UserOrganisationEntity, (affectation) => affectation.user) // ✅ Correction ici
+  affectations: UserOrganisationEntity[];
+
 }

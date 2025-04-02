@@ -1,17 +1,18 @@
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable prettier/prettier */
 import {
   Controller,
   Get,
   Post,
   Body,
-  Patch,
   Param,
   Delete,
   UseGuards,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
 import { UserSignUpDto } from './dto/user-signup.dbo';
 import { UserEntity } from './entities/user.entity';
 import { UserSignInDto } from './dto/user-signin.dbo';
@@ -26,29 +27,17 @@ export class UsersController {
 
   @Post('signup')
   async signup(
-    @Body() userSignUpDto: UserSignUpDto,
+    @Body() userSignUpDto: UserSignUpDto
   ): Promise<{ user: Omit<UserEntity, 'password'> }> {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, prettier/prettier
     const user = await this.usersService.signup(userSignUpDto);
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    return { user }; // Retourne l'utilisateur sans le mot de passe
+    return { user };
   }
 
   @Post('signin')
-  async signin(
-    @Body() UserSignInDto: UserSignInDto,
-  ): Promise<{ user; accessToken: string }> {
-    const user = await this.usersService.signin(UserSignInDto);
-    const accessToken = await this.usersService.accessToken(UserSignInDto);
-    return { accessToken, user };
+  async signin(@Body() userSignInDto: UserSignInDto) {
+    return await this.usersService.signin(userSignInDto);
   }
 
-  @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.create(createUserDto);
-  }
-
-  // @AuthorizeRoles(Roles.ADMIN)
   @UseGuards(AuthentificationGuard, AuthorizeGuard([Roles.ADMIN]))
   @Get('all')
   async findAll(): Promise<UserEntity[]> {
@@ -59,22 +48,17 @@ export class UsersController {
   async findOne(@Param('id') id: string): Promise<UserEntity> {
     return await this.usersService.findOne(+id);
   }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update(+id, updateUserDto);
-  }
-
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.usersService.remove(+id);
+  async remove(@Param('id') id: string) {
+    await this.usersService.remove(+id);
+    return { message: "Utilisateur supprimé avec succès." };
   }
 
   @UseGuards(AuthentificationGuard)
   @Get('me')
   getProfile(@CurrentUser() currentUser: UserEntity) {
     if (!currentUser) {
-      throw new Error('Aucun utilisateur connecté');
+      throw new UnauthorizedException('Utilisateur non connecté.');
     }
     return currentUser;
   }

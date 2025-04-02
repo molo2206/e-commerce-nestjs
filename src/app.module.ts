@@ -13,8 +13,9 @@ import { HttpModule } from '@nestjs/axios';
 import { ApiClientsModule } from './api-clients/api-clients.module';
 import { HttpClientModule } from './http-client/http-client.module';
 import { ExcelModule } from './excel/excel.module';
+import { UserPermissionsModule } from './user-permissions/user-permissions.module';
 @Module({
-  imports: [TypeOrmModule.forRoot(dataSourceOptions), ApiClientsModule, HttpModule, UsersModule, CategoriesModule, ProductsModule, ReviewsModule, OtpModule, OrdersModule, ApiClientsModule, HttpClientModule, ExcelModule],
+  imports: [TypeOrmModule.forRoot(dataSourceOptions), ApiClientsModule, HttpModule, UsersModule, CategoriesModule, ProductsModule, ReviewsModule, OtpModule, OrdersModule, ApiClientsModule, HttpClientModule, ExcelModule, UserPermissionsModule],
   controllers: [],
   providers: [],
 })

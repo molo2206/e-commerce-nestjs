@@ -72,6 +72,7 @@
     "@types/xlsx": "^0.0.35",
     "@typescript-eslint/eslint-plugin": "^8.26.1",
     "@typescript-eslint/parser": "^8.26.1",
+    "copyfiles": "^2.4.1",
     "dotenv": "^16.4.7",
     "eslint": "^9.22.0",
     "eslint-config-prettier": "^10.1.1",
