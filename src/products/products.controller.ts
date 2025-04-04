@@ -15,12 +15,16 @@ import { CurrentUser } from 'src/users/utility/decorators/current-user-decorator
 import { UserEntity } from 'src/users/entities/user.entity';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
+import { CheckPermission } from 'src/users/utility/decorators/permission.decorator';
+import { PermissionsGuard } from 'src/users/utility/guards/permissions.guard';
 
 @Controller('products')
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) { }
 
   @UseGuards(AuthentificationGuard, AuthorizeGuard([Roles.ADMIN]))
+  @UseGuards(PermissionsGuard)
+  @CheckPermission('products', 'read')
   @Post()
   @UseInterceptors(FilesInterceptor('images', 5, {  // Permet l'upload de 5 images max
     storage: diskStorage({

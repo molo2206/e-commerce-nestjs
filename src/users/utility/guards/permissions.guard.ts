@@ -1,51 +1,51 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable prettier/prettier */
-import { Injectable, CanActivate, ExecutionContext, UnauthorizedException, ForbiddenException } from '@nestjs/common';
+import {
+    CanActivate,
+    ExecutionContext,
+    ForbiddenException,
+    Injectable,
+} from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { UserEntity } from 'src/users/entities/user.entity';
-import { UserPermissionService } from '../../../user-permissions/user-permissions.service';
+import { DataSource } from 'typeorm';
+import { PERMISSION_KEY } from '../decorators/permission.decorator';
+import { userHasPermission } from 'src/user-permissions/services/permissions';
 
 @Injectable()
-export class PermissionGuard implements CanActivate {
+export class PermissionsGuard implements CanActivate {
     constructor(
-        private readonly reflector: Reflector,
-        private readonly userPermissionService: UserPermissionService, // Service pour vérifier les permissions
+        private reflector: Reflector,
+        private dataSource: DataSource // <-- injecté ici
     ) { }
 
     async canActivate(context: ExecutionContext): Promise<boolean> {
-        const handler = context.getHandler();
-        const requiredPermission: string | undefined = this.reflector.get<string>('permission', handler);
+        const { permission, action } =
+            this.reflector.getAllAndOverride<{ permission: string; action: string }>(
+                PERMISSION_KEY,
+                [context.getHandler(), context.getClass()]
+            ) || {};
 
-        // Si aucune permission n'est requise, on autorise l'accès
-        if (!requiredPermission) {
-            return true;
-        }
-
-        // Extraire `resource` et `action`
-        const [resource, action] = requiredPermission.split(':'); // Vérifie le format de tes permissions !
-
-        if (!resource || !action) {
-            throw new Error(`Format de permission invalide : ${requiredPermission}`);
-        }
+        if (!permission || !action) return true;
 
         const request = context.switchToHttp().getRequest();
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        const user: UserEntity | undefined = request.user;
+        const user = request.currentUser;
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        // console.log('request.user:', request.currentUser);
+        if (!user) throw new ForbiddenException('Utilisateur non authentifié');
 
-        if (!user) {
-            throw new UnauthorizedException('Utilisateur non authentifié');
-        }
+        const hasPermission = await userHasPermission(
+            this.dataSource,
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
+            user.id,
+            permission,
+            action as 'read' | 'create' | 'update' | 'delete'
+        );
 
-        // Vérifie si l'utilisateur possède la permission requise
-        const hasPermission = await this.userPermissionService.checkPermissions(user.id, resource, action);
 
-        if (!hasPermission) {
-            throw new ForbiddenException('Permission refusée');
-        }
+        if (!hasPermission) throw new ForbiddenException('Permission refusée');
 
         return true;
     }
-
-
 }
